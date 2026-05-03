@@ -1,3 +1,1 @@
 # project_alpha
-
-Test

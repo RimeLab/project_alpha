@@ -12,6 +12,10 @@ db-up:
 db-down:
 	docker compose down
 
+# Stop the database and delete all stored data
+db-clean:
+	docker compose down -v
+
 # View database logs
 db-logs:
 	docker compose logs -f db

@@ -189,6 +189,15 @@ make db-up
 
 This starts PostgreSQL in the background. To stop it later, run `make db-down` (or `docker compose down`).
 
+To stop the database **and delete all stored data** (useful for a clean slate), run:
+
+```bash
+make db-clean
+# or: docker compose down -v
+```
+
+> **Warning:** `db-clean` permanently deletes the database volume. You will need to run `make migrate` and `python manage.py seed_posts` again afterwards.
+
 ### 6. Run migrations
 
 This creates the database tables the app needs:
@@ -211,7 +220,8 @@ python manage.py seed_posts
 ## Running the development server
 
 ```bash
-python manage.py runserver
+make run
+# or: python manage.py runserver
 ```
 
 Open your browser and go to:
@@ -250,6 +260,7 @@ Django creates a temporary test database automatically and destroys it when the 
 | Start the server | `make run` | `python manage.py runserver` |
 | Start the database | `make db-up` | `docker compose up -d` |
 | Stop the database | `make db-down` | `docker compose down` |
+| Stop and delete all data | `make db-clean` | `docker compose down -v` |
 | Apply migrations | `make migrate` | `python manage.py makemigrations && python manage.py migrate` |
 | Install dependencies | `make install` | `pip install -r requirements.txt` |
 | Run tests | `make test` | `python manage.py test -v 2` |

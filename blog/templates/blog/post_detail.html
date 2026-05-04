@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'blog/post_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<a class="back" href="{% url 'blog:post_list' %}">&larr; All posts</a>
+
+{% if post.thumbnail %}
+  <img class="post-thumb" src="{{ post.thumbnail.url }}" alt="{{ post.title }}">
+{% endif %}
+
+<h1>{{ post.title }}</h1>
+<p class="meta">
+  By {{ post.created_by.get_full_name|default:post.created_by.username }}
+  &middot; {{ post.created_at|date:"N j, Y" }}
+</p>
+
+<div class="body">{{ post.body }}</div>
+{% endblock %}

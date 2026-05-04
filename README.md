@@ -6,7 +6,7 @@ A Django blog application with a PostgreSQL database.
 
 ## Prerequisites
 
-You need three tools installed before you can run this project: **Python**, **Docker**, and **Git**.
+You need four tools installed before you can run this project: **Python**, **Docker**, **Git**, and **make**.
 
 ### 1. Python 3.12+
 
@@ -93,6 +93,41 @@ If it's not installed, run `brew install git`.
 
 ---
 
+### 4. make
+
+**Mac** — `make` comes pre-installed. Confirm with:
+```bash
+make --version
+```
+
+**Windows** — `make` is not included with Windows. Install it using **Chocolatey**, a package manager for Windows.
+
+**Step 1 — Install Chocolatey**
+
+Open PowerShell **as Administrator** (right-click the PowerShell icon → *Run as administrator*) and run:
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+Close and reopen PowerShell when it finishes.
+
+**Step 2 — Install `make`**
+
+```powershell
+choco install make -y
+```
+
+**Step 3 — Confirm it worked**
+
+```powershell
+make --version
+```
+
+---
+
 ## Setup
 
 Run these commands once to get everything ready. Open a terminal (Terminal on Mac, PowerShell on Windows) and follow each step.
@@ -125,7 +160,8 @@ You'll know it's active when you see `(venv)` at the start of your prompt. **You
 ### 3. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+make install
+# or: pip install -r requirements.txt
 ```
 
 ### 4. Configure environment variables
@@ -147,17 +183,19 @@ copy .env.example .env
 Make sure Docker Desktop is open and running, then:
 
 ```bash
-docker compose up -d
+make db-up
+# or: docker compose up -d
 ```
 
-This starts PostgreSQL in the background. To stop it later, run `docker compose down`.
+This starts PostgreSQL in the background. To stop it later, run `make db-down` (or `docker compose down`).
 
 ### 6. Run migrations
 
 This creates the database tables the app needs:
 
 ```bash
-python manage.py migrate
+make migrate
+# or: python manage.py migrate
 ```
 
 ### 7. Load sample data
@@ -188,39 +226,22 @@ Press `Ctrl + C` in the terminal to stop the server.
 
 ---
 
-## Common commands
+## Running the tests
 
-### Installing `make` on Windows
+Make sure the database is running (`docker compose up -d`), then:
 
-`make` is built into Mac and Linux but not Windows. Install it once using **Chocolatey**, a package manager for Windows.
-
-**Step 1 — Install Chocolatey**
-
-Open PowerShell **as Administrator** (right-click the PowerShell icon → *Run as administrator*) and run:
-
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```bash
+make test
+# or: python manage.py test -v 2
 ```
 
-Close and reopen PowerShell when it finishes.
+Each test name and its result will be printed to the console as it runs.
 
-**Step 2 — Install `make`**
-
-```powershell
-choco install make -y
-```
-
-**Step 3 — Confirm it worked**
-
-```powershell
-make --version
-```
-
-Once installed, all `make` commands work the same on Windows as on Mac.
+Django creates a temporary test database automatically and destroys it when the tests finish, so your real data is never affected.
 
 ---
+
+## Common commands
 
 ### Command reference
 
@@ -231,4 +252,4 @@ Once installed, all `make` commands work the same on Windows as on Mac.
 | Stop the database | `make db-down` | `docker compose down` |
 | Apply migrations | `make migrate` | `python manage.py makemigrations && python manage.py migrate` |
 | Install dependencies | `make install` | `pip install -r requirements.txt` |
-| Run tests | `make test` | `python manage.py test` |
+| Run tests | `make test` | `python manage.py test -v 2` |

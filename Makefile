@@ -31,5 +31,5 @@ install:
 
 # Run tests
 test:
-	python manage.py test
+	python manage.py test -v 2
 

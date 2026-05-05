@@ -1,4 +1,4 @@
-.PHONY: run migrate superuser shell install test clean app db-up db-down db-logs
+.PHONY: run migrate superuser shell install test lint clean app db-up db-down db-logs
 
 # Default target
 run:
@@ -36,4 +36,8 @@ install:
 # Run tests
 test:
 	python manage.py test -v 2
+
+# Run linter
+lint:
+	ruff check .
 

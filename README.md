@@ -264,3 +264,4 @@ Django creates a temporary test database automatically and destroys it when the 
 | Apply migrations | `make migrate` | `python manage.py makemigrations && python manage.py migrate` |
 | Install dependencies | `make install` | `pip install -r requirements.txt` |
 | Run tests | `make test` | `python manage.py test -v 2` |
+| Run linter | `make lint` | `ruff check .` |

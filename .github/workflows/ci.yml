@@ -41,10 +41,10 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: make install
 
       - name: Lint
-        run: ruff check . --verbose
+        run: make lint
 
       - name: Test
-        run: python manage.py test -v 2
+        run: make test

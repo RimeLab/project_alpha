@@ -20,10 +20,10 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Restore
-        run: dotnet restore AlphaApi.Tests
+        run: dotnet restore AlphaApi/AlphaApi.Tests
 
       - name: Build
-        run: dotnet build AlphaApi.Tests --no-restore --configuration Release
+        run: dotnet build AlphaApi/AlphaApi.Tests --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test AlphaApi.Tests --no-build --configuration Release --logger "console;verbosity=normal"
+        run: dotnet test AlphaApi/AlphaApi.Tests --no-build --configuration Release --logger "console;verbosity=normal"

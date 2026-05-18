@@ -3,8 +3,8 @@
 # ===========================
 AlphaApi/bin/
 AlphaApi/obj/
-AlphaApi.Tests/bin/
-AlphaApi.Tests/obj/
+AlphaApi/AlphaApi.Tests/bin/
+AlphaApi/AlphaApi.Tests/obj/
 AlphaApi/*.user
 AlphaApi/*.suo
 AlphaApi/*.userosscache

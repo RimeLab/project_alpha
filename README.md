@@ -5,6 +5,29 @@ A .NET 10 Web API backend with a Vue 3 + TypeScript frontend and a PostgreSQL da
 - Backend: [`AlphaApi/`](AlphaApi/README.md)
 - Frontend: [`alpha-fe/`](alpha-fe/README.md)
 
+## Overview
+
+```mermaid
+flowchart TD
+    Browser(["Browser"])
+
+    subgraph fe["fe · localhost:5173"]
+        FE["Vue 3 + TypeScript\nVite"]
+    end
+
+    subgraph api["api · localhost:5221"]
+        API["ASP.NET Core · .NET 10"]
+    end
+
+    subgraph db["db · localhost:5432"]
+        DB[("PostgreSQL 18")]
+    end
+
+    Browser -->|HTTP| fe
+    fe -->|REST / JSON| api
+    api -->|EF Core · Npgsql| db
+```
+
 ---
 
 ## Prerequisites

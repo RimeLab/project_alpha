@@ -4,6 +4,8 @@
 
 Base URL: `http://localhost:5221`
 
+API reference (Scalar UI): `http://localhost:5221/scalar/v1`
+
 ---
 
 ## Prerequisites
@@ -79,6 +81,10 @@ docker compose up -d
 ```
 
 See the [root README](../README.md) for the full stack command reference.
+
+### Scalar API Reference
+
+Once running, open `http://localhost:5221/scalar/v1` in your browser for interactive API docs where you can browse all endpoints and execute requests directly.
 
 ---
 

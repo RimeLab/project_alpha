@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,11 +8,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.Configure<AppMetadata>(builder.Configuration.GetSection("AppMetadata"));
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
     await DbSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<AppDbContext>());
+
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.MapGet("/", () => new { message = "Welcome" });
 app.MapGet("/metadata", (IOptions<AppMetadata> metadata) => metadata.Value);

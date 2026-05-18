@@ -1,47 +1,81 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue'
+import UserPanel from '@/components/UserPanel.vue'
+import CoffeePanel from '@/components/CoffeePanel.vue'
+
+const tab = ref<'users' | 'coffees'>('users')
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="app">
+    <header class="header">
+      <span class="logo">☕ AlphaApi</span>
+      <nav class="tabs">
+        <button :class="['tab', { active: tab === 'users' }]" @click="tab = 'users'">Users</button>
+        <button :class="['tab', { active: tab === 'coffees' }]" @click="tab = 'coffees'">Coffees</button>
+      </nav>
+    </header>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <main class="main">
+      <UserPanel v-if="tab === 'users'" />
+      <CoffeePanel v-else />
+    </main>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 1.5rem;
+  height: 56px;
+  background: var(--color-background-soft);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-heading);
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.tab {
+  padding: 0.35rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.15s;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.tab:hover {
+  background: var(--color-background-mute);
+}
+
+.tab.active {
+  background: var(--color-background-mute);
+  border-color: var(--color-border-hover);
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.main {
+  flex: 1;
+  overflow: hidden;
 }
 </style>

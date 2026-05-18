@@ -38,6 +38,8 @@ services:
       context: ./alpha-fe
     container_name: project_alpha_fe
     restart: unless-stopped
+    environment:
+      - VITE_API_TARGET=http://api:5221
     ports:
       - "5173:5173"
     volumes:

@@ -16,29 +16,36 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    for (var attempt = 1; ; attempt++)
+    if (db.Database.IsRelational())
     {
-        try
+        for (var attempt = 1; ; attempt++)
         {
-            await db.Database.MigrateAsync();
-            break;
-        }
-        catch (Npgsql.PostgresException ex) when (ex.SqlState == "42P07") // relation already exists
-        {
-            // Tables exist from a prior migration set — sync history without re-running DDL
+            try
+            {
+                await db.Database.MigrateAsync();
+                break;
+            }
+            catch (Npgsql.PostgresException ex) when (ex.SqlState == "42P07") // relation already exists
+            {
+                // Tables exist from a prior migration set — sync history without re-running DDL
 #pragma warning disable EF1003
-            foreach (var m in db.Database.GetPendingMigrations())
-                await db.Database.ExecuteSqlRawAsync(
-                    $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") " +
-                    $"VALUES ('{m}', '10.0.8') ON CONFLICT DO NOTHING");
+                foreach (var m in db.Database.GetPendingMigrations())
+                    await db.Database.ExecuteSqlRawAsync(
+                        $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") " +
+                        $"VALUES ('{m}', '10.0.8') ON CONFLICT DO NOTHING");
 #pragma warning restore EF1003
-            break;
+                break;
+            }
+            catch when (attempt < 10)
+            {
+                Console.WriteLine($"Database not ready, retrying in 3s... (attempt {attempt}/10)");
+                await Task.Delay(3000);
+            }
         }
-        catch when (attempt < 10)
-        {
-            Console.WriteLine($"Database not ready, retrying in 3s... (attempt {attempt}/10)");
-            await Task.Delay(3000);
-        }
+    }
+    else
+    {
+        await db.Database.EnsureCreatedAsync();
     }
 
     await DbSeeder.SeedAsync(db);

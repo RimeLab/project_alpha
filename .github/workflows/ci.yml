@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore AlphaApi.Tests
+
+      - name: Build
+        run: dotnet build AlphaApi.Tests --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test AlphaApi.Tests --no-build --configuration Release --logger "console;verbosity=normal"

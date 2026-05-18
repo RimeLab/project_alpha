@@ -131,6 +131,22 @@ Source files are mounted into each container, so edits you make locally are pick
 
 ---
 
+## Testing
+
+The `AlphaApi.Tests` project contains unit and integration tests. Tests run against an in-memory database — no running database or Docker is needed.
+
+```bash
+dotnet test AlphaApi.Tests
+```
+
+To see per-test output:
+
+```bash
+dotnet test AlphaApi.Tests -v normal
+```
+
+---
+
 ## API examples
 
 The API runs at `http://localhost:5221`. An interactive reference (Scalar) is available at `http://localhost:5221/scalar`.

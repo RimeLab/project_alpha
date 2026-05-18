@@ -1,0 +1,73 @@
+# ===========================
+# .NET / C# (AlphaApi)
+# ===========================
+AlphaApi/bin/
+AlphaApi/obj/
+AlphaApi/*.user
+AlphaApi/*.suo
+AlphaApi/*.userosscache
+AlphaApi/*.sln.docstates
+AlphaApi/.vs/
+AlphaApi/*.userprefs
+AlphaApi/packages/
+AlphaApi/*.nupkg
+AlphaApi/*.snupkg
+AlphaApi/*.nuget.props
+AlphaApi/*.nuget.targets
+AlphaApi/project.lock.json
+AlphaApi/project.fragment.lock.json
+AlphaApi/artifacts/
+AlphaApi/_ReSharper*/
+AlphaApi/*.DotSettings.user
+AlphaApi/TestResults/
+AlphaApi/*.coverage
+AlphaApi/*.coveragexml
+AlphaApi/*.csproj.lscache
+AlphaApi/launchSettings.json.local
+
+# ===========================
+# Node.js / Vue / Vite (alpha-fe)
+# ===========================
+alpha-fe/node_modules/
+alpha-fe/dist/
+alpha-fe/dist-ssr/
+alpha-fe/.vite/
+alpha-fe/*.local
+
+# Logs
+alpha-fe/logs/
+alpha-fe/*.log
+alpha-fe/npm-debug.log*
+alpha-fe/yarn-debug.log*
+alpha-fe/yarn-error.log*
+alpha-fe/pnpm-debug.log*
+
+# Test / coverage
+alpha-fe/coverage/
+alpha-fe/*.lcov
+alpha-fe/.nyc_output/
+
+# Build cache
+alpha-fe/.turbo/
+alpha-fe/.nuxt/
+alpha-fe/.output/
+alpha-fe/.cache/
+
+# ===========================
+# Environment & secrets
+# ===========================
+.env
+.env.*
+!.env.example
+
+# ===========================
+# OS / Editor
+# ===========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+!.vscode/extensions.json
+*.code-workspace

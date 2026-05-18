@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
     volumes:
@@ -19,6 +21,8 @@ services:
       - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5221
+      - DOTNET_WATCH_SUPPRESS_BROWSER_REFRESH=true
     ports:
       - "5221:5221"
     volumes:

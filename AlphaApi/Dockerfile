@@ -6,4 +6,4 @@ COPY . .
 ENV ASPNETCORE_URLS=http://+:5221
 ENV DOTNET_USE_POLLING_FILE_WATCHER=true
 EXPOSE 5221
-CMD ["dotnet", "watch", "run", "--non-interactive"]
+CMD ["dotnet", "watch", "run", "--non-interactive", "--no-launch-profile"]

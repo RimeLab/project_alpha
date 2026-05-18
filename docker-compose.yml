@@ -10,5 +10,39 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  api:
+    build:
+      context: ./AlphaApi
+    container_name: project_alpha_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5221:5221"
+    volumes:
+      - ./AlphaApi:/app
+      - api_bin:/app/bin
+      - api_obj:/app/obj
+    depends_on:
+      - db
+
+  fe:
+    build:
+      context: ./alpha-fe
+    container_name: project_alpha_fe
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./alpha-fe:/app
+      - fe_node_modules:/app/node_modules
+    depends_on:
+      - api
+
 volumes:
   pgdata:
+  api_bin:
+  api_obj:
+  fe_node_modules:

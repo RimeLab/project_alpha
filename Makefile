@@ -1,43 +1,24 @@
-.PHONY: run migrate superuser shell install test lint clean app db-up db-down db-logs
+.PHONY: db-up db-down db-clean db-logs stack-up stack-down stack-logs
 
-# Default target
-run:
-	python manage.py runserver
-
-# Start the database
+# Database only
 db-up:
-	docker compose up -d
+	docker compose up -d db
 
-# Stop the database
 db-down:
 	docker compose down
 
-# Stop the database and delete all stored data
 db-clean:
 	docker compose down -v
 
-# View database logs
 db-logs:
 	docker compose logs -f db
 
-# Apply migrations
-migrate:
-	python manage.py makemigrations
-	python manage.py migrate
+# Full stack
+stack-up:
+	docker compose up -d
 
-# Create a superuser
-superuser:
-	python manage.py createsuperuser
+stack-down:
+	docker compose down
 
-# Install dependencies
-install:
-	pip install -r requirements.txt
-
-# Run tests
-test:
-	python manage.py test -v 2
-
-# Run linter
-lint:
-	ruff check .
-
+stack-logs:
+	docker compose logs -f

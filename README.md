@@ -89,22 +89,40 @@ copy .env.example .env
 
 Open `.env` and fill in values for `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB`.
 
-### 3. Start the database
+### 3. Start the stack
 
-Make sure Docker Desktop is open and running, then:
+Make sure Docker Desktop is open and running, then bring up all services (database, API, and frontend):
 
 ```bash
-make db-up
+make stack-up
 # or: docker compose up -d
 ```
 
+Source files are mounted into each container, so edits you make locally are picked up automatically — no rebuild required.
+
+| Service | URL |
+|---|---|
+| Frontend | `http://localhost:5173` |
+| API | `http://localhost:5221` |
+| Database | `localhost:5432` |
+
 ---
 
-## Database commands
+## Commands
+
+### Full stack
 
 | Task | Command |
 |---|---|
-| Start the database | `make db-up` / `docker compose up -d` |
+| Start all services | `make stack-up` / `docker compose up -d` |
+| Stop all services | `make stack-down` / `docker compose down` |
+| Tail all logs | `make stack-logs` / `docker compose logs -f` |
+
+### Database only
+
+| Task | Command |
+|---|---|
+| Start the database | `make db-up` / `docker compose up -d db` |
 | Stop the database | `make db-down` / `docker compose down` |
 | Stop and delete all data | `make db-clean` / `docker compose down -v` |
 | View database logs | `make db-logs` / `docker compose logs -f db` |

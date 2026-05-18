@@ -1,42 +1,54 @@
 # alpha-fe
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 + TypeScript frontend.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Prerequisites
 
-## Recommended Browser Setup
+### Node.js 20+
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+**Mac**
 
-## Type Support for `.vue` Imports in TS
+1. Install [Homebrew](https://brew.sh) if you don't have it:
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+2. Install Node.js:
+   ```bash
+   brew install node
+   ```
+3. Confirm it worked:
+   ```bash
+   node --version
+   ```
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+**Windows**
 
-## Customize configuration
+1. Download the LTS installer from [nodejs.org](https://nodejs.org/) and run it with default settings.
+2. Open a new PowerShell window and confirm:
+   ```powershell
+   node --version
+   ```
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## Setup
 
-```sh
+Install dependencies once after cloning:
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+---
 
-```sh
+## Running
+
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+The frontend will be available at `http://localhost:5173`.
 
-```sh
-npm run build
-```
+Press `Ctrl + C` to stop the server.

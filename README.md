@@ -128,3 +128,96 @@ Source files are mounted into each container, so edits you make locally are pick
 | View database logs | `make db-logs` / `docker compose logs -f db` |
 
 > **Warning:** `db-clean` permanently deletes the database volume and all stored data.
+
+---
+
+## API examples
+
+The API runs at `http://localhost:5221`. An interactive reference (Scalar) is available at `http://localhost:5221/scalar`.
+
+### Users
+
+**Create a user**
+```bash
+curl -X POST http://localhost:5221/users \
+  -H "Content-Type: application/json" \
+  -d '{"username": "alice", "password": "secret", "description": "coffee enthusiast"}'
+# {"id":1,"username":"alice","description":"coffee enthusiast"}
+```
+
+**List all users**
+```bash
+curl http://localhost:5221/users
+# [{"id":1,"username":"alice","description":"coffee enthusiast"}]
+```
+
+**Get a single user**
+```bash
+curl http://localhost:5221/users/1
+```
+
+**Update a user**
+```bash
+curl -X PUT http://localhost:5221/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{"username": "alice", "password": "newpass", "description": "updated bio"}'
+```
+
+**Delete a user**
+```bash
+curl -X DELETE http://localhost:5221/users/1
+```
+
+---
+
+### Coffee
+
+`intensity` must be 1–10. `rating` must be 1–5. `temperature` is a free-text string (e.g. `"hot"`, `"iced"`).
+
+**Log a coffee**
+```bash
+curl -X POST http://localhost:5221/coffee \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "Flat White",
+    "shop": "Onyx Coffee Lab",
+    "location": "Bentonville, AR",
+    "intensity": 7,
+    "rating": 5,
+    "temperature": "hot",
+    "notes": "nutty, sweet finish",
+    "userId": 1
+  }'
+# {"id":1,"type":"Flat White","shop":"Onyx Coffee Lab","location":"Bentonville, AR","intensity":7,"rating":5,"temperature":"hot","notes":"nutty, sweet finish","userId":1}
+```
+
+**List all coffees**
+```bash
+curl http://localhost:5221/coffee
+```
+
+**Get a single coffee** (includes user info)
+```bash
+curl http://localhost:5221/coffee/1
+```
+
+**Update a coffee**
+```bash
+curl -X PUT http://localhost:5221/coffee/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "Espresso",
+    "shop": "Onyx Coffee Lab",
+    "location": "Bentonville, AR",
+    "intensity": 9,
+    "rating": 4,
+    "temperature": "hot",
+    "notes": "bold, slightly bitter",
+    "userId": 1
+  }'
+```
+
+**Delete a coffee**
+```bash
+curl -X DELETE http://localhost:5221/coffee/1
+```

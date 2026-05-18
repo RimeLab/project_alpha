@@ -10,12 +10,15 @@ builder.Services.Configure<AppMetadata>(builder.Configuration.GetSection("AppMet
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+    await DbSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<AppDbContext>());
+
 app.MapGet("/", () => new { message = "Welcome" });
 app.MapGet("/metadata", (IOptions<AppMetadata> metadata) => metadata.Value);
 
 // --- User ---
 
-var users = app.MapGroup("/user");
+var users = app.MapGroup("/users");
 
 users.MapPost("/", async (CreateUserRequest req, AppDbContext db) =>
 {
@@ -27,7 +30,7 @@ users.MapPost("/", async (CreateUserRequest req, AppDbContext db) =>
     };
     db.Users.Add(user);
     await db.SaveChangesAsync();
-    return Results.Created($"/user/{user.Id}", new { user.Id, user.Username, user.Description });
+    return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, user.Description });
 });
 
 users.MapGet("/", async (AppDbContext db) =>

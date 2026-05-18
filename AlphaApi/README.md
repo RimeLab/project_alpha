@@ -82,6 +82,37 @@ See the [root README](../README.md) for the full stack command reference.
 
 ---
 
+## Seed Data
+
+On first startup the API automatically seeds the database with test users and coffee entries. Seeding is skipped if the `Users` table already has rows.
+
+### Users
+
+| ID | Username | Password | Description |
+|----|----------|----------|-------------|
+| 1 | `frost` | `password123` | Coffee obsessive |
+| 2 | `maya` | `password123` | Espresso purist |
+| 3 | `charlie` | `password123` | Cold brew convert |
+
+### Coffees
+
+| ID | Type | Shop | Location | Intensity | Rating | Temperature | User |
+|----|------|------|----------|-----------|--------|-------------|------|
+| 1 | Espresso | Blue Bottle | San Francisco, CA | 9 | 5 | Hot | frost |
+| 2 | Latte | Sightglass | San Francisco, CA | 5 | 4 | Hot | frost |
+| 3 | Cortado | Ritual Coffee | San Francisco, CA | 7 | 5 | Hot | maya |
+| 4 | Flat White | Four Barrel | San Francisco, CA | 6 | 3 | Hot | maya |
+| 5 | Cold Brew | Philz Coffee | Palo Alto, CA | 8 | 4 | Cold | charlie |
+| 6 | Iced Latte | Verve Coffee | Santa Cruz, CA | 4 | 4 | Cold | charlie |
+
+To reset seed data, clear the database and restart the container:
+
+```bash
+docker compose down -v && docker compose up -d
+```
+
+---
+
 ## Endpoints
 
 ### Utility
@@ -95,11 +126,11 @@ See the [root README](../README.md) for the full stack command reference.
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| `POST` | `/user` | Create a user |
-| `GET` | `/user` | List all users |
-| `GET` | `/user/{id}` | Get user by ID |
-| `PUT` | `/user/{id}` | Update user |
-| `DELETE` | `/user/{id}` | Delete user |
+| `POST` | `/users` | Create a user |
+| `GET` | `/users` | List all users |
+| `GET` | `/users/{id}` | Get user by ID |
+| `PUT` | `/users/{id}` | Update user |
+| `DELETE` | `/users/{id}` | Delete user |
 
 ### Coffee
 
@@ -115,60 +146,62 @@ See the [root README](../README.md) for the full stack command reference.
 
 ## Example Requests
 
-### POST /user
+### POST /users
 
 ```bash
-curl -s -X POST http://localhost:5221/user \
+curl -s -X POST http://localhost:5221/users \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "frost",
-    "password": "hunter2",
-    "description": "Coffee enthusiast"
+    "username": "alex",
+    "password": "password123",
+    "description": "New user"
   }'
 ```
 
 ```json
 {
-  "id": 1,
-  "username": "frost",
-  "description": "Coffee enthusiast"
+  "id": 4,
+  "username": "alex",
+  "description": "New user"
 }
 ```
 
 ---
 
-### GET /user
+### GET /users
 
 ```bash
-curl -s http://localhost:5221/user
+curl -s http://localhost:5221/users
 ```
 
 ```json
 [
-  { "id": 1, "username": "frost", "description": "Coffee enthusiast" }
+  { "id": 1, "username": "frost",   "description": "Coffee obsessive" },
+  { "id": 2, "username": "maya",    "description": "Espresso purist" },
+  { "id": 3, "username": "charlie", "description": "Cold brew convert" }
 ]
 ```
 
 ---
 
-### GET /user/{id}
+### GET /users/{id}
 
 ```bash
-curl -s http://localhost:5221/user/1
+curl -s http://localhost:5221/users/1
 ```
 
 ```json
-{ "id": 1, "username": "frost", "description": "Coffee enthusiast" }
+{ "id": 1, "username": "frost", "description": "Coffee obsessive" }
 ```
 
 ---
 
-### PUT /user/{id}
+### PUT /users/{id}
 
 `password` is optional — omit it to keep the existing password.
 
 ```bash
-curl -s -X PUT http://localhost:5221/user/1 \
+curl -s -X PUT http://localhost:5221/users/1 \
   -H "Content-Type: application/json" \
   -d '{
     "username": "frost",
@@ -182,10 +215,10 @@ curl -s -X PUT http://localhost:5221/user/1 \
 
 ---
 
-### DELETE /user/{id}
+### DELETE /users/{id}
 
 ```bash
-curl -s -X DELETE http://localhost:5221/user/1
+curl -s -X DELETE http://localhost:5221/users/3
 ```
 
 Returns `204 No Content`.
@@ -200,27 +233,27 @@ Returns `204 No Content`.
 curl -s -X POST http://localhost:5221/coffee \
   -H "Content-Type: application/json" \
   -d '{
-    "type": "Espresso",
-    "shop": "Blue Bottle",
+    "type": "Cappuccino",
+    "shop": "Sightglass",
     "location": "San Francisco, CA",
-    "intensity": 8,
+    "intensity": 7,
     "rating": 5,
     "temperature": "Hot",
-    "notes": "Nutty finish, great crema",
+    "notes": "Perfectly textured milk, great balance",
     "userId": 1
   }'
 ```
 
 ```json
 {
-  "id": 1,
-  "type": "Espresso",
-  "shop": "Blue Bottle",
+  "id": 7,
+  "type": "Cappuccino",
+  "shop": "Sightglass",
   "location": "San Francisco, CA",
-  "intensity": 8,
+  "intensity": 7,
   "rating": 5,
   "temperature": "Hot",
-  "notes": "Nutty finish, great crema",
+  "notes": "Perfectly textured milk, great balance",
   "userId": 1
 }
 ```
@@ -235,17 +268,12 @@ curl -s http://localhost:5221/coffee
 
 ```json
 [
-  {
-    "id": 1,
-    "type": "Espresso",
-    "shop": "Blue Bottle",
-    "location": "San Francisco, CA",
-    "intensity": 8,
-    "rating": 5,
-    "temperature": "Hot",
-    "notes": "Nutty finish, great crema",
-    "userId": 1
-  }
+  { "id": 1, "type": "Espresso",   "shop": "Blue Bottle",   "location": "San Francisco, CA", "intensity": 9, "rating": 5, "temperature": "Hot",  "notes": "Nutty finish, great crema",           "userId": 1 },
+  { "id": 2, "type": "Latte",      "shop": "Sightglass",    "location": "San Francisco, CA", "intensity": 5, "rating": 4, "temperature": "Hot",  "notes": "Smooth and well-balanced",            "userId": 1 },
+  { "id": 3, "type": "Cortado",    "shop": "Ritual Coffee", "location": "San Francisco, CA", "intensity": 7, "rating": 5, "temperature": "Hot",  "notes": "Perfect ratio, clean aftertaste",     "userId": 2 },
+  { "id": 4, "type": "Flat White", "shop": "Four Barrel",   "location": "San Francisco, CA", "intensity": 6, "rating": 3, "temperature": "Hot",  "notes": "A bit over-extracted today",          "userId": 2 },
+  { "id": 5, "type": "Cold Brew",  "shop": "Philz Coffee",  "location": "Palo Alto, CA",     "intensity": 8, "rating": 4, "temperature": "Cold", "notes": "Strong and smooth, great for summer", "userId": 3 },
+  { "id": 6, "type": "Iced Latte", "shop": "Verve Coffee",  "location": "Santa Cruz, CA",    "intensity": 4, "rating": 4, "temperature": "Cold", "notes": "Light and refreshing",                "userId": 3 }
 ]
 ```
 
@@ -265,7 +293,7 @@ curl -s http://localhost:5221/coffee/1
   "type": "Espresso",
   "shop": "Blue Bottle",
   "location": "San Francisco, CA",
-  "intensity": 8,
+  "intensity": 9,
   "rating": 5,
   "temperature": "Hot",
   "notes": "Nutty finish, great crema",
@@ -273,7 +301,7 @@ curl -s http://localhost:5221/coffee/1
   "user": {
     "id": 1,
     "username": "frost",
-    "description": "Coffee enthusiast"
+    "description": "Coffee obsessive"
   }
 }
 ```
@@ -289,10 +317,10 @@ curl -s -X PUT http://localhost:5221/coffee/1 \
     "type": "Espresso",
     "shop": "Blue Bottle",
     "location": "San Francisco, CA",
-    "intensity": 9,
-    "rating": 4,
+    "intensity": 10,
+    "rating": 5,
     "temperature": "Hot",
-    "notes": "Bolder on second visit",
+    "notes": "Even better on the second visit",
     "userId": 1
   }'
 ```
@@ -303,10 +331,10 @@ curl -s -X PUT http://localhost:5221/coffee/1 \
   "type": "Espresso",
   "shop": "Blue Bottle",
   "location": "San Francisco, CA",
-  "intensity": 9,
-  "rating": 4,
+  "intensity": 10,
+  "rating": 5,
   "temperature": "Hot",
-  "notes": "Bolder on second visit",
+  "notes": "Even better on the second visit",
   "userId": 1
 }
 ```
@@ -316,7 +344,7 @@ curl -s -X PUT http://localhost:5221/coffee/1 \
 ### DELETE /coffee/{id}
 
 ```bash
-curl -s -X DELETE http://localhost:5221/coffee/1
+curl -s -X DELETE http://localhost:5221/coffee/6
 ```
 
 Returns `204 No Content`.
@@ -330,7 +358,7 @@ Returns `204 No Content`.
 | `intensity` | Integer, 1–10 |
 | `rating` | Integer, 1–5 |
 | `userId` (coffee) | Must reference an existing user |
-| `password` (PUT /user) | Optional — omit to keep existing |
+| `password` (PUT /users) | Optional — omit to keep existing |
 
 Validation failures return `400 Bad Request` with an `error` message.
 

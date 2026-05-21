@@ -170,24 +170,59 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    Host=<endpoint>.neon.tech;Database=neondb;Username=neondb_owner;Password=<password>;SSL Mode=Require
    ```
 
-### 2. Deploy to Render
+### 2. Deploy alpha-api (Web Service)
 
 1. Push the repo to GitHub.
-2. Go to [render.com](https://render.com) → **New → Blueprint** and connect the repo. Render reads `render.yaml` and creates both services.
-3. Once created, open the **alpha-api** service and set its environment variables:
+2. Go to [render.com](https://render.com) → **New → Web Service**.
+3. Connect your GitHub repo.
+4. Configure the service:
+
+   | Setting | Value |
+   |---|---|
+   | Language | Docker |
+   | Root Directory | `AlphaApi` |
+   | Dockerfile Path | `./Dockerfile.prod` |
+
+5. Set environment variables:
 
    | Key | Value |
    |---|---|
+   | `ASPNETCORE_ENVIRONMENT` | `Production` |
    | `ConnectionStrings__DefaultConnection` | Npgsql connection string from step 1 |
-   | `Cors__AllowedOrigins__0` | Render URL of alpha-fe (e.g. `https://alpha-fe.onrender.com`) |
+   | `Cors__AllowedOrigins__0` | *(leave blank for now — fill in after alpha-fe is created)* |
 
-4. Open the **alpha-fe** service and set:
+6. Click **Deploy**. Once the deploy finishes, copy the service URL (e.g. `https://alpha-api.onrender.com`).
+
+### 3. Deploy alpha-fe (Static Site)
+
+1. Go to **New → Static Site** and connect the same repo.
+2. Configure the site:
+
+   | Setting | Value |
+   |---|---|
+   | Root Directory | `alpha-fe` |
+   | Build Command | `npm ci && npm run build` |
+   | Publish Directory | `dist` |
+
+3. Under **Redirects/Rewrites**, add a rule:
+
+   | Source | Destination | Action |
+   |---|---|---|
+   | `/*` | `/index.html` | Rewrite |
+
+4. Set environment variables:
 
    | Key | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | Render URL of alpha-api (e.g. `https://alpha-api.onrender.com`) |
+   | `VITE_API_BASE_URL` | URL of alpha-api from step 2 (e.g. `https://alpha-api.onrender.com`) |
 
-5. Trigger a deploy on **alpha-fe** after setting `VITE_API_BASE_URL` so the URL is embedded into the build.
+5. Click **Deploy**. Once finished, copy the site URL (e.g. `https://alpha-fe.onrender.com`).
+
+### 4. Finish wiring CORS
+
+1. Go back to the **alpha-api** service → **Environment**.
+2. Set `Cors__AllowedOrigins__0` to the alpha-fe URL from step 3.
+3. Save — Render will redeploy alpha-api automatically.
 
 > Render terminates TLS at the edge — both services are reachable only over HTTPS. HTTP requests to either service are redirected to HTTPS automatically.
 

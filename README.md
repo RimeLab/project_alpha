@@ -204,7 +204,7 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    | Build Command | `npm ci && npm run build` |
    | Publish Directory | `dist` |
 
-3. Under **Redirects/Rewrites**, add a rule:
+3. In the service **Settings** tab, scroll to **Redirects/Rewrites** and add a rule:
 
    | Source | Destination | Action |
    |---|---|---|

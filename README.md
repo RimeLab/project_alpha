@@ -191,7 +191,7 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    | `ConnectionStrings__DefaultConnection` | Npgsql connection string from step 1 |
    | `Cors__AllowedOrigins__0` | *(leave blank for now — fill in after alpha-fe is created)* |
 
-6. Click **Deploy**. The API is live at `https://project-alpha-ywdn.onrender.com`.
+6. Click **Deploy**. The API is live at `https://alpha-api-ejzj.onrender.com`.
 
 ### 3. Deploy alpha-fe (Static Site)
 

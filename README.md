@@ -154,6 +154,45 @@ Source files are mounted into each container, so edits you make locally are pick
 
 ---
 
+## Deployment
+
+The project deploys to **Render** using the `render.yaml` Blueprint. The API connects to **Neon Serverless Postgres**.
+
+### 1. Set up Neon
+
+1. Create a project at [neon.tech](https://neon.tech).
+2. From the project dashboard, copy the connection string for the `neondb_owner` role. It looks like:
+   ```
+   postgresql://neondb_owner:<password>@<endpoint>.neon.tech/neondb?sslmode=require
+   ```
+3. Convert it to the Npgsql format you'll paste into Render:
+   ```
+   Host=<endpoint>.neon.tech;Database=neondb;Username=neondb_owner;Password=<password>;SSL Mode=Require
+   ```
+
+### 2. Deploy to Render
+
+1. Push the repo to GitHub.
+2. Go to [render.com](https://render.com) → **New → Blueprint** and connect the repo. Render reads `render.yaml` and creates both services.
+3. Once created, open the **alpha-api** service and set its environment variables:
+
+   | Key | Value |
+   |---|---|
+   | `ConnectionStrings__DefaultConnection` | Npgsql connection string from step 1 |
+   | `Cors__AllowedOrigins__0` | Render URL of alpha-fe (e.g. `https://alpha-fe.onrender.com`) |
+
+4. Open the **alpha-fe** service and set:
+
+   | Key | Value |
+   |---|---|
+   | `VITE_API_BASE_URL` | Render URL of alpha-api (e.g. `https://alpha-api.onrender.com`) |
+
+5. Trigger a deploy on **alpha-fe** after setting `VITE_API_BASE_URL` so the URL is embedded into the build.
+
+> Render terminates TLS at the edge — both services are reachable only over HTTPS. HTTP requests to either service are redirected to HTTPS automatically.
+
+---
+
 ## Testing
 
 The `AlphaApi.Tests` project contains unit and integration tests. Tests run against an in-memory database — no running database or Docker is needed.

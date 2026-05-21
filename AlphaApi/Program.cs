@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
@@ -10,9 +11,26 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.Configure<AppMetadata>(builder.Configuration.GetSection("AppMetadata"));
 builder.Services.AddOpenApi();
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy =>
+        policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()));
+
 var app = builder.Build();
 
+var forwardedOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedOptions.KnownIPNetworks.Clear();
+forwardedOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedOptions);
+
+if (!app.Environment.IsDevelopment())
+    app.UseHsts();
+
 app.UseHttpsRedirection();
+app.UseCors();
 
 using (var scope = app.Services.CreateScope())
 {

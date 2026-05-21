@@ -1,0 +1,14 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY AlphaApi.csproj .
+RUN dotnet restore
+COPY . .
+RUN dotnet publish AlphaApi.csproj -c Release -o /app/publish --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app/publish .
+COPY entrypoint.prod.sh /entrypoint.prod.sh
+RUN chmod +x /entrypoint.prod.sh
+EXPOSE 8080
+ENTRYPOINT ["/entrypoint.prod.sh"]

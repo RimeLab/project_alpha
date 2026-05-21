@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: alpha-api
+    env: docker
+    rootDir: AlphaApi
+    dockerfilePath: ./Dockerfile.prod
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false  # Neon connection string — set in Render dashboard
+      - key: Cors__AllowedOrigins__0
+        sync: false  # Render URL of alpha-fe, e.g. https://alpha-fe.onrender.com
+
+  - type: web
+    name: alpha-fe
+    env: static
+    rootDir: alpha-fe
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false  # Render URL of alpha-api, e.g. https://alpha-api.onrender.com

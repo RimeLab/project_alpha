@@ -191,7 +191,7 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    | `ConnectionStrings__DefaultConnection` | Npgsql connection string from step 1 |
    | `Cors__AllowedOrigins__0` | *(leave blank for now — fill in after alpha-fe is created)* |
 
-6. Click **Deploy**. Once the deploy finishes, copy the service URL (e.g. `https://alpha-api.onrender.com`).
+6. Click **Deploy**. The API is live at `https://project-alpha-ywdn.onrender.com`.
 
 ### 3. Deploy alpha-fe (Static Site)
 
@@ -214,9 +214,9 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
 
    | Key | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | URL of alpha-api from step 2 (e.g. `https://alpha-api.onrender.com`) |
+   | `VITE_API_BASE_URL` | `https://project-alpha-ywdn.onrender.com` |
 
-5. Click **Deploy**. Once finished, copy the site URL (e.g. `https://alpha-fe.onrender.com`).
+5. Click **Deploy**. Once finished, copy the site URL.
 
 ### 4. Finish wiring CORS
 

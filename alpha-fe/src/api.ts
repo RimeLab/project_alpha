@@ -34,18 +34,21 @@ const json = (body: unknown) => ({
   body: JSON.stringify(body),
 })
 
-export const getUsers    = () => fetch(`${BASE}/users`).then(r => handle<User[]>(r))
-export const createUser  = (data: { username: string; password: string; description?: string | null }) =>
-  fetch(`${BASE}/users`, { method: 'POST', ...json(data) }).then(r => handle<User>(r))
-export const updateUser  = (id: number, data: { username: string; password?: string; description?: string | null }) =>
-  fetch(`${BASE}/users/${id}`, { method: 'PUT', ...json(data) }).then(r => handle<User>(r))
-export const deleteUser  = (id: number) =>
-  fetch(`${BASE}/users/${id}`, { method: 'DELETE' }).then(r => handle<void>(r))
+const request = (url: string, options?: RequestInit) =>
+  fetch(url, { signal: AbortSignal.timeout(120_000), ...options })
 
-export const getCoffees   = () => fetch(`${BASE}/coffee`).then(r => handle<Coffee[]>(r))
+export const getUsers    = () => request(`${BASE}/users`).then(r => handle<User[]>(r))
+export const createUser  = (data: { username: string; password: string; description?: string | null }) =>
+  request(`${BASE}/users`, { method: 'POST', ...json(data) }).then(r => handle<User>(r))
+export const updateUser  = (id: number, data: { username: string; password?: string; description?: string | null }) =>
+  request(`${BASE}/users/${id}`, { method: 'PUT', ...json(data) }).then(r => handle<User>(r))
+export const deleteUser  = (id: number) =>
+  request(`${BASE}/users/${id}`, { method: 'DELETE' }).then(r => handle<void>(r))
+
+export const getCoffees   = () => request(`${BASE}/coffee`).then(r => handle<Coffee[]>(r))
 export const createCoffee = (data: Omit<Coffee, 'id'>) =>
-  fetch(`${BASE}/coffee`, { method: 'POST', ...json(data) }).then(r => handle<Coffee>(r))
+  request(`${BASE}/coffee`, { method: 'POST', ...json(data) }).then(r => handle<Coffee>(r))
 export const updateCoffee = (id: number, data: Omit<Coffee, 'id'>) =>
-  fetch(`${BASE}/coffee/${id}`, { method: 'PUT', ...json(data) }).then(r => handle<Coffee>(r))
+  request(`${BASE}/coffee/${id}`, { method: 'PUT', ...json(data) }).then(r => handle<Coffee>(r))
 export const deleteCoffee = (id: number) =>
-  fetch(`${BASE}/coffee/${id}`, { method: 'DELETE' }).then(r => handle<void>(r))
+  request(`${BASE}/coffee/${id}`, { method: 'DELETE' }).then(r => handle<void>(r))

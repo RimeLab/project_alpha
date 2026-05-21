@@ -214,7 +214,7 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
 
    | Key | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | `https://project-alpha-ywdn.onrender.com` |
+   | `VITE_API_BASE_URL` | `https://alpha-api-ejzj.onrender.com` |
 
 5. Click **Deploy**. Once finished, copy the site URL.
 

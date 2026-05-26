@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,7 +71,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapOpenApi();
-app.MapScalarApiReference();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/openapi/v1.json", "AlphaApi v1"));
 
 app.MapGet("/", () => new { message = "Welcome" });
 app.MapGet("/metadata", (IOptions<AppMetadata> metadata) => metadata.Value);

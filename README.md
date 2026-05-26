@@ -246,7 +246,7 @@ dotnet test AlphaApi/AlphaApi.Tests -v normal
 
 ## API examples
 
-The API runs at `http://localhost:5221`. An interactive reference (Scalar) is available at `http://localhost:5221/scalar`.
+The API runs at `http://localhost:5221`. An interactive reference (Swagger UI) is available at `http://localhost:5221/swagger`.
 
 ### Users
 

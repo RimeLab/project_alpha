@@ -191,7 +191,7 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    | `DATABASE_URL` | asyncpg connection string from step 1 |
    | `CORS_ALLOWED_ORIGINS` | *(leave blank for now — fill in after alpha-fe is deployed)* |
 
-6. Click **Deploy**. The API is live at `https://alpha-api.onrender.com`.
+6. Click **Deploy**. The API is live at `https://alpha-api-s4vm.onrender.com`.
 
 ### 3. Deploy alpha-fe (Static Site)
 
@@ -214,14 +214,14 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
 
    | Key | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | `https://alpha-api.onrender.com` |
+   | `VITE_API_BASE_URL` | `https://alpha-api-s4vm.onrender.com` |
 
-5. Click **Deploy**. Once finished, copy the site URL.
+5. Click **Deploy**. The site is live at `https://project-alpha-92c2.onrender.com`.
 
 ### 4. Finish wiring CORS
 
 1. Go back to the **alpha-api** service → **Environment**.
-2. Set `CORS_ALLOWED_ORIGINS` to the alpha-fe URL from step 3.
+2. Set `CORS_ALLOWED_ORIGINS` to `https://project-alpha-92c2.onrender.com`.
 3. Save — Render will redeploy alpha-api automatically.
 
 > Render terminates TLS at the edge — both services are reachable only over HTTPS. HTTP requests to either service are redirected to HTTPS automatically.

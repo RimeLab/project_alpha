@@ -73,7 +73,7 @@ async def metadata():
 
 # --- Users ---
 
-@app.post("/users/", status_code=201)
+@app.post("/users", status_code=201)
 async def create_user(req: UserCreate, db: AsyncSession = Depends(get_db)):
     user = User(username=req.username, password=hash_password(req.password), description=req.description)
     db.add(user)
@@ -82,7 +82,7 @@ async def create_user(req: UserCreate, db: AsyncSession = Depends(get_db)):
     return JSONResponse(status_code=201, content=_user(user), headers={"Location": f"/users/{user.id}"})
 
 
-@app.get("/users/")
+@app.get("/users")
 async def list_users(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User))
     return [_user(u) for u in result.scalars()]
@@ -121,7 +121,7 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
 
 # --- Coffee ---
 
-@app.post("/coffee/", status_code=201)
+@app.post("/coffee", status_code=201)
 async def create_coffee(req: CoffeeCreate, db: AsyncSession = Depends(get_db)):
     if not (1 <= req.intensity <= 10):
         return JSONResponse(status_code=400, content={"error": "Intensity must be between 1 and 10."})
@@ -142,7 +142,7 @@ async def create_coffee(req: CoffeeCreate, db: AsyncSession = Depends(get_db)):
     return JSONResponse(status_code=201, content=_coffee(coffee), headers={"Location": f"/coffee/{coffee.id}"})
 
 
-@app.get("/coffee/")
+@app.get("/coffee")
 async def list_coffees(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Coffee))
     return [_coffee(c) for c in result.scalars()]

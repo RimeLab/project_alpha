@@ -236,7 +236,7 @@ The API runs at `http://localhost:8000`. Interactive Swagger UI is at `http://lo
 
 **Create a user**
 ```bash
-curl -X POST http://localhost:8000/users/ \
+curl -X POST http://localhost:8000/users \
   -H "Content-Type: application/json" \
   -d '{"username": "alice", "password": "secret", "description": "coffee enthusiast"}'
 # {"id":1,"username":"alice","description":"coffee enthusiast"}
@@ -244,7 +244,7 @@ curl -X POST http://localhost:8000/users/ \
 
 **List all users**
 ```bash
-curl http://localhost:8000/users/
+curl http://localhost:8000/users
 # [{"id":1,"username":"alice","description":"coffee enthusiast"}]
 ```
 
@@ -273,7 +273,7 @@ curl -X DELETE http://localhost:8000/users/1
 
 **Log a coffee**
 ```bash
-curl -X POST http://localhost:8000/coffee/ \
+curl -X POST http://localhost:8000/coffee \
   -H "Content-Type: application/json" \
   -d '{
     "type": "Flat White",
@@ -290,7 +290,7 @@ curl -X POST http://localhost:8000/coffee/ \
 
 **List all coffees**
 ```bash
-curl http://localhost:8000/coffee/
+curl http://localhost:8000/coffee
 ```
 
 **Get a single coffee** (includes user info)

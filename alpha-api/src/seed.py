@@ -1,7 +1,8 @@
 from sqlalchemy import select
-from database import SessionLocal
-from models import User, Coffee
-from security import hash_password
+
+from .database import SessionLocal
+from .models import User, Coffee
+from .security import hash_password
 
 
 async def seed_db() -> None:

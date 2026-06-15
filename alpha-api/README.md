@@ -12,7 +12,7 @@ Python FastAPI backend with async PostgreSQL via SQLAlchemy + asyncpg.
 | Server | Uvicorn |
 | ORM | SQLAlchemy 2.0 (async) |
 | Database driver | asyncpg |
-| Password hashing | passlib + bcrypt |
+| Password hashing | bcrypt |
 
 ---
 
@@ -67,13 +67,13 @@ The container mounts `./alpha-api` so edits are picked up automatically by uvico
 | GET | `/` | Health check |
 | GET | `/metadata` | App version |
 | GET | `/docs` | Swagger UI |
-| POST | `/users/` | Create user |
-| GET | `/users/` | List users |
+| POST | `/users` | Create user |
+| GET | `/users` | List users |
 | GET | `/users/{id}` | Get user |
 | PUT | `/users/{id}` | Update user |
 | DELETE | `/users/{id}` | Delete user |
-| POST | `/coffee/` | Log a coffee |
-| GET | `/coffee/` | List coffees |
+| POST | `/coffee` | Log a coffee |
+| GET | `/coffee` | List coffees |
 | GET | `/coffee/{id}` | Get coffee (includes user) |
 | PUT | `/coffee/{id}` | Update coffee |
 | DELETE | `/coffee/{id}` | Delete coffee |
@@ -89,12 +89,18 @@ The container mounts `./alpha-api` so edits are picked up automatically by uvico
 
 ```
 alpha-api/
-├── main.py          # FastAPI app and all route handlers
-├── models.py        # SQLAlchemy ORM models (Users, Coffees tables)
-├── schemas.py       # Pydantic request bodies
-├── database.py      # Async engine and session factory
-├── security.py      # bcrypt password hashing
-├── seed.py          # Seed data (runs on startup if DB is empty)
+├── src/
+│   ├── main.py          # FastAPI app, lifespan, middleware, router includes
+│   ├── database.py      # Async engine and session factory
+│   ├── models.py        # SQLAlchemy ORM models
+│   ├── security.py      # bcrypt password hashing
+│   ├── seed.py          # Seed data (runs on startup if DB is empty)
+│   ├── routers/
+│   │   ├── users.py     # /users routes
+│   │   └── coffee.py    # /coffee routes
+│   └── schemas/
+│       ├── users.py     # User request/response schemas
+│       └── coffee.py    # Coffee request/response schemas
 ├── requirements.txt
 ├── Dockerfile           # Dev image (uvicorn --reload, port 8000)
 └── Dockerfile.prod      # Prod image (port $PORT, default 8080)

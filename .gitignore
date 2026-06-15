@@ -1,31 +1,15 @@
 # ===========================
-# .NET / C# (AlphaApi)
+# Python / FastAPI (alpha-api)
 # ===========================
-AlphaApi/bin/
-AlphaApi/obj/
-AlphaApi/AlphaApi.Tests/bin/
-AlphaApi/AlphaApi.Tests/obj/
-AlphaApi/*.user
-AlphaApi/*.suo
-AlphaApi/*.userosscache
-AlphaApi/*.sln.docstates
-AlphaApi/.vs/
-AlphaApi/*.userprefs
-AlphaApi/packages/
-AlphaApi/*.nupkg
-AlphaApi/*.snupkg
-AlphaApi/*.nuget.props
-AlphaApi/*.nuget.targets
-AlphaApi/project.lock.json
-AlphaApi/project.fragment.lock.json
-AlphaApi/artifacts/
-AlphaApi/_ReSharper*/
-AlphaApi/*.DotSettings.user
-AlphaApi/TestResults/
-AlphaApi/*.coverage
-AlphaApi/*.coveragexml
-AlphaApi/*.csproj.lscache
-AlphaApi/launchSettings.json.local
+alpha-api/__pycache__/
+alpha-api/**/__pycache__/
+alpha-api/*.pyc
+alpha-api/*.pyo
+alpha-api/.venv/
+alpha-api/venv/
+alpha-api/.pytest_cache/
+alpha-api/htmlcov/
+alpha-api/.coverage
 
 # ===========================
 # Node.js / Vue / Vite (alpha-fe)

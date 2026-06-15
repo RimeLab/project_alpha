@@ -2,15 +2,13 @@ services:
   - type: web
     name: alpha-api
     env: docker
-    rootDir: AlphaApi
+    rootDir: alpha-api
     dockerfilePath: ./Dockerfile.prod
     healthCheckPath: /
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
-      - key: ConnectionStrings__DefaultConnection
-        sync: false  # Neon connection string — set in Render dashboard
-      - key: Cors__AllowedOrigins__0
+      - key: DATABASE_URL
+        sync: false  # Neon connection string (postgresql+asyncpg://...) — set in Render dashboard
+      - key: CORS_ALLOWED_ORIGINS
         sync: false  # Render URL of alpha-fe, e.g. https://alpha-fe.onrender.com
 
   - type: web

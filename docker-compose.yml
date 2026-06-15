@@ -14,22 +14,17 @@ services:
 
   api:
     build:
-      context: ./AlphaApi
+      context: ./alpha-api
     container_name: project_alpha_api
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5221
-      - DOTNET_WATCH_SUPPRESS_BROWSER_REFRESH=true
-      - ConnectionStrings__DefaultConnection=Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
     ports:
-      - "5221:5221"
+      - "8000:8000"
     volumes:
-      - ./AlphaApi:/app
-      - api_bin:/app/bin
-      - api_obj:/app/obj
+      - ./alpha-api:/app
     depends_on:
       - db
 
@@ -39,7 +34,7 @@ services:
     container_name: project_alpha_fe
     restart: unless-stopped
     environment:
-      - VITE_API_TARGET=http://api:5221
+      - VITE_API_TARGET=http://api:8000
     ports:
       - "5173:5173"
     volumes:
@@ -50,6 +45,4 @@ services:
 
 volumes:
   pgdata:
-  api_bin:
-  api_obj:
   fe_node_modules:

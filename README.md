@@ -1,8 +1,8 @@
 # project_alpha
 
-A .NET 10 Web API backend with a Vue 3 + TypeScript frontend and a PostgreSQL database.
+A FastAPI backend with a Vue 3 + TypeScript frontend and a PostgreSQL database.
 
-- Backend: [`AlphaApi/`](AlphaApi/README.md)
+- Backend: [`alpha-api/`](alpha-api/README.md)
 - Frontend: [`alpha-fe/`](alpha-fe/README.md)
 
 ## Overview
@@ -15,8 +15,8 @@ flowchart TD
         FE["Vue 3 + TypeScript\nVite"]
     end
 
-    subgraph api["api · localhost:5221"]
-        API["ASP.NET Core · .NET 10"]
+    subgraph api["api · localhost:8000"]
+        API["FastAPI · Python"]
     end
 
     subgraph db["db · localhost:5432"]
@@ -25,7 +25,7 @@ flowchart TD
 
     Browser -->|HTTP| fe
     fe -->|REST / JSON| api
-    api -->|EF Core · Npgsql| db
+    api -->|SQLAlchemy · asyncpg| db
 ```
 
 ---
@@ -36,7 +36,7 @@ You need two tools installed before you can run this project: **Docker** and **G
 
 ### 1. Docker Desktop
 
-Docker runs the PostgreSQL database inside a container so you don't have to install Postgres manually.
+Docker runs the database and API inside containers so you don't have to install Postgres or Python manually.
 
 **Mac**
 
@@ -126,7 +126,8 @@ Source files are mounted into each container, so edits you make locally are pick
 | Service | URL |
 |---|---|
 | Frontend | `http://localhost:5173` |
-| API | `http://localhost:5221` |
+| API | `http://localhost:8000` |
+| API docs | `http://localhost:8000/docs` |
 | Database | `localhost:5432` |
 
 ---
@@ -165,9 +166,9 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    ```
    postgresql://neondb_owner:<password>@<endpoint>.neon.tech/neondb?sslmode=require
    ```
-3. Convert it to the Npgsql format you'll paste into Render:
+3. Convert it to the asyncpg format you'll paste into Render (replace `postgresql://` with `postgresql+asyncpg://`):
    ```
-   Host=<endpoint>.neon.tech;Database=neondb;Username=neondb_owner;Password=<password>;SSL Mode=Require
+   postgresql+asyncpg://neondb_owner:<password>@<endpoint>.neon.tech/neondb?ssl=require
    ```
 
 ### 2. Deploy alpha-api (Web Service)
@@ -180,18 +181,17 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    | Setting | Value |
    |---|---|
    | Language | Docker |
-   | Root Directory | `AlphaApi` |
+   | Root Directory | `alpha-api` |
    | Dockerfile Path | `./Dockerfile.prod` |
 
 5. Set environment variables:
 
    | Key | Value |
    |---|---|
-   | `ASPNETCORE_ENVIRONMENT` | `Production` |
-   | `ConnectionStrings__DefaultConnection` | Npgsql connection string from step 1 |
-   | `Cors__AllowedOrigins__0` | *(leave blank for now — fill in after alpha-fe is created)* |
+   | `DATABASE_URL` | asyncpg connection string from step 1 |
+   | `CORS_ALLOWED_ORIGINS` | *(leave blank for now — fill in after alpha-fe is deployed)* |
 
-6. Click **Deploy**. The API is live at `https://alpha-api-ejzj.onrender.com`.
+6. Click **Deploy**. The API is live at `https://alpha-api.onrender.com`.
 
 ### 3. Deploy alpha-fe (Static Site)
 
@@ -214,45 +214,29 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
 
    | Key | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | `https://alpha-api-ejzj.onrender.com` |
+   | `VITE_API_BASE_URL` | `https://alpha-api.onrender.com` |
 
 5. Click **Deploy**. Once finished, copy the site URL.
 
 ### 4. Finish wiring CORS
 
 1. Go back to the **alpha-api** service → **Environment**.
-2. Set `Cors__AllowedOrigins__0` to the alpha-fe URL from step 3.
+2. Set `CORS_ALLOWED_ORIGINS` to the alpha-fe URL from step 3.
 3. Save — Render will redeploy alpha-api automatically.
 
 > Render terminates TLS at the edge — both services are reachable only over HTTPS. HTTP requests to either service are redirected to HTTPS automatically.
 
 ---
 
-## Testing
-
-The `AlphaApi.Tests` project contains unit and integration tests. Tests run against an in-memory database — no running database or Docker is needed.
-
-```bash
-dotnet test AlphaApi/AlphaApi.Tests
-```
-
-To see per-test output:
-
-```bash
-dotnet test AlphaApi/AlphaApi.Tests -v normal
-```
-
----
-
 ## API examples
 
-The API runs at `http://localhost:5221`. An interactive reference (Swagger UI) is available at `http://localhost:5221/swagger`.
+The API runs at `http://localhost:8000`. Interactive Swagger UI is at `http://localhost:8000/docs`.
 
 ### Users
 
 **Create a user**
 ```bash
-curl -X POST http://localhost:5221/users \
+curl -X POST http://localhost:8000/users/ \
   -H "Content-Type: application/json" \
   -d '{"username": "alice", "password": "secret", "description": "coffee enthusiast"}'
 # {"id":1,"username":"alice","description":"coffee enthusiast"}
@@ -260,36 +244,36 @@ curl -X POST http://localhost:5221/users \
 
 **List all users**
 ```bash
-curl http://localhost:5221/users
+curl http://localhost:8000/users/
 # [{"id":1,"username":"alice","description":"coffee enthusiast"}]
 ```
 
 **Get a single user**
 ```bash
-curl http://localhost:5221/users/1
+curl http://localhost:8000/users/1
 ```
 
 **Update a user**
 ```bash
-curl -X PUT http://localhost:5221/users/1 \
+curl -X PUT http://localhost:8000/users/1 \
   -H "Content-Type: application/json" \
   -d '{"username": "alice", "password": "newpass", "description": "updated bio"}'
 ```
 
 **Delete a user**
 ```bash
-curl -X DELETE http://localhost:5221/users/1
+curl -X DELETE http://localhost:8000/users/1
 ```
 
 ---
 
 ### Coffee
 
-`intensity` must be 1–10. `rating` must be 1–5. `temperature` is a free-text string (e.g. `"hot"`, `"iced"`).
+`intensity` must be 1–10. `rating` must be 1–5. `temperature` is a free-text string (e.g. `"Hot"`, `"Cold"`).
 
 **Log a coffee**
 ```bash
-curl -X POST http://localhost:5221/coffee \
+curl -X POST http://localhost:8000/coffee/ \
   -H "Content-Type: application/json" \
   -d '{
     "type": "Flat White",
@@ -297,26 +281,26 @@ curl -X POST http://localhost:5221/coffee \
     "location": "Bentonville, AR",
     "intensity": 7,
     "rating": 5,
-    "temperature": "hot",
+    "temperature": "Hot",
     "notes": "nutty, sweet finish",
     "userId": 1
   }'
-# {"id":1,"type":"Flat White","shop":"Onyx Coffee Lab","location":"Bentonville, AR","intensity":7,"rating":5,"temperature":"hot","notes":"nutty, sweet finish","userId":1}
+# {"id":1,"type":"Flat White","shop":"Onyx Coffee Lab","location":"Bentonville, AR","intensity":7,"rating":5,"temperature":"Hot","notes":"nutty, sweet finish","userId":1}
 ```
 
 **List all coffees**
 ```bash
-curl http://localhost:5221/coffee
+curl http://localhost:8000/coffee/
 ```
 
 **Get a single coffee** (includes user info)
 ```bash
-curl http://localhost:5221/coffee/1
+curl http://localhost:8000/coffee/1
 ```
 
 **Update a coffee**
 ```bash
-curl -X PUT http://localhost:5221/coffee/1 \
+curl -X PUT http://localhost:8000/coffee/1 \
   -H "Content-Type: application/json" \
   -d '{
     "type": "Espresso",
@@ -324,7 +308,7 @@ curl -X PUT http://localhost:5221/coffee/1 \
     "location": "Bentonville, AR",
     "intensity": 9,
     "rating": 4,
-    "temperature": "hot",
+    "temperature": "Hot",
     "notes": "bold, slightly bitter",
     "userId": 1
   }'
@@ -332,5 +316,5 @@ curl -X PUT http://localhost:5221/coffee/1 \
 
 **Delete a coffee**
 ```bash
-curl -X DELETE http://localhost:5221/coffee/1
+curl -X DELETE http://localhost:8000/coffee/1
 ```

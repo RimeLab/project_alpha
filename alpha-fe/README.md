@@ -51,4 +51,6 @@ npm run dev
 
 The frontend will be available at `http://localhost:5173`.
 
+The Vite dev server proxies all `/api` requests to the backend. By default it targets `http://localhost:8000`. Override with the `VITE_API_TARGET` environment variable.
+
 Press `Ctrl + C` to stop the server.

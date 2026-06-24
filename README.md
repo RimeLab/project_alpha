@@ -132,6 +132,74 @@ Source files are mounted into each container, so edits you make locally are pick
 
 ---
 
+## Running locally (without Docker)
+
+This runs PostgreSQL, the API, and the frontend directly on your machine — no Docker required.
+
+### Prerequisites
+
+| Tool | Version | Install |
+|---|---|---|
+| PostgreSQL | 14+ | `brew install postgresql@16` (Mac) / [postgresql.org](https://www.postgresql.org/download/windows/) (Windows) |
+| Python | 3.12+ | `brew install python` (Mac) / [python.org](https://www.python.org/downloads/) (Windows) |
+| Node.js | 20+ | `brew install node` (Mac) / [nodejs.org](https://nodejs.org/) (Windows) |
+
+### 1. Start PostgreSQL and create the database
+
+**Mac**
+```bash
+brew services start postgresql@16
+createdb project_alpha
+```
+
+**Windows** — start the PostgreSQL service from the Services panel or via pgAdmin, then open psql and run:
+```sql
+CREATE DATABASE project_alpha;
+```
+
+### 2. Start the API
+
+**Mac**
+```bash
+cd alpha-api
+pip install -r requirements.txt
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost/project_alpha uvicorn src.main:app --reload
+```
+
+**Windows**
+```powershell
+cd alpha-api
+pip install -r requirements.txt
+$env:DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost/project_alpha"
+uvicorn src.main:app --reload
+```
+
+Adjust `postgres:postgres` to match your local PostgreSQL username and password if they differ.
+
+API available at `http://localhost:8000`. Interactive docs at `http://localhost:8000/docs`.
+
+### 3. Start the frontend
+
+Open a second terminal:
+
+**Mac**
+```bash
+cd alpha-fe
+npm install
+npm run dev
+```
+
+**Windows**
+```powershell
+cd alpha-fe
+npm install
+npm run dev
+```
+
+Frontend available at `http://localhost:5173`. The Vite dev server proxies API requests to `http://localhost:8000` by default.
+
+---
+
 ## Commands
 
 ### Full stack

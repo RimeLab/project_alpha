@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_BASE_URL ?? '/api'
+const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api'
 
 export interface User {
   id: number
@@ -37,12 +37,12 @@ const json = (body: unknown) => ({
 const request = (url: string, options?: RequestInit) =>
   fetch(url, { signal: AbortSignal.timeout(120_000), ...options })
 
-export const getUsers    = () => request(`${BASE}/users`).then(r => handle<User[]>(r))
-export const createUser  = (data: { username: string; password: string; description?: string | null }) =>
+export const getUsers   = () => request(`${BASE}/users`).then(r => handle<User[]>(r))
+export const createUser = (data: { username: string; password: string; description?: string | null }) =>
   request(`${BASE}/users`, { method: 'POST', ...json(data) }).then(r => handle<User>(r))
-export const updateUser  = (id: number, data: { username: string; password?: string; description?: string | null }) =>
+export const updateUser = (id: number, data: { username: string; password?: string; description?: string | null }) =>
   request(`${BASE}/users/${id}`, { method: 'PUT', ...json(data) }).then(r => handle<User>(r))
-export const deleteUser  = (id: number) =>
+export const deleteUser = (id: number) =>
   request(`${BASE}/users/${id}`, { method: 'DELETE' }).then(r => handle<void>(r))
 
 export const getCoffees   = () => request(`${BASE}/coffee`).then(r => handle<Coffee[]>(r))

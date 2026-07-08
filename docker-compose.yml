@@ -34,15 +34,17 @@ services:
     container_name: project_alpha_fe
     restart: unless-stopped
     environment:
-      - VITE_API_TARGET=http://api:8000
+      - API_TARGET=http://api:8000
     ports:
-      - "5173:5173"
+      - "3000:3000"
     volumes:
       - ./alpha-fe:/app
       - fe_node_modules:/app/node_modules
+      - fe_next:/app/.next
     depends_on:
       - api
 
 volumes:
   pgdata:
   fe_node_modules:
+  fe_next:

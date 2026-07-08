@@ -1,6 +1,6 @@
 # project_alpha
 
-A FastAPI backend with a Vue 3 + TypeScript frontend and a PostgreSQL database.
+A FastAPI backend with a Next.js frontend and a PostgreSQL database.
 
 - Backend: [`alpha-api/`](alpha-api/README.md)
 - Frontend: [`alpha-fe/`](alpha-fe/README.md)
@@ -11,8 +11,8 @@ A FastAPI backend with a Vue 3 + TypeScript frontend and a PostgreSQL database.
 flowchart TD
     Browser(["Browser"])
 
-    subgraph fe["fe · localhost:5173"]
-        FE["Vue 3 + TypeScript\nVite"]
+    subgraph fe["fe · localhost:3000"]
+        FE["Next.js 15 · React 19 · TypeScript"]
     end
 
     subgraph api["api · localhost:8000"]
@@ -125,7 +125,7 @@ Source files are mounted into each container, so edits you make locally are pick
 
 | Service | URL |
 |---|---|
-| Frontend | `http://localhost:5173` |
+| Frontend | `http://localhost:3000` |
 | API | `http://localhost:8000` |
 | API docs | `http://localhost:8000/docs` |
 | Database | `localhost:5432` |
@@ -196,7 +196,7 @@ npm install
 npm run dev
 ```
 
-Frontend available at `http://localhost:5173`. The Vite dev server proxies API requests to `http://localhost:8000` by default.
+Frontend available at `http://localhost:3000`. The Next.js dev server proxies `/api` requests to `http://localhost:8000` by default.
 
 ---
 
@@ -225,21 +225,21 @@ Frontend available at `http://localhost:5173`. The Vite dev server proxies API r
 
 ## Deployment
 
-The project deploys to **Render** using the `render.yaml` Blueprint. The API connects to **Neon Serverless Postgres**.
+The API deploys to **Render** and the frontend deploys to **Vercel**.
 
-### 1. Set up Neon
+### 1. Set up Neon (database)
 
 1. Create a project at [neon.tech](https://neon.tech).
 2. From the project dashboard, copy the connection string for the `neondb_owner` role. It looks like:
    ```
    postgresql://neondb_owner:<password>@<endpoint>.neon.tech/neondb?sslmode=require
    ```
-3. Convert it to the asyncpg format you'll paste into Render (replace `postgresql://` with `postgresql+asyncpg://`):
+3. Convert it to the asyncpg format (replace `postgresql://` with `postgresql+asyncpg://`):
    ```
    postgresql+asyncpg://neondb_owner:<password>@<endpoint>.neon.tech/neondb?ssl=require
    ```
 
-### 2. Deploy alpha-api (Web Service)
+### 2. Deploy alpha-api to Render
 
 1. Push the repo to GitHub.
 2. Go to [render.com](https://render.com) → **New → Web Service**.
@@ -259,40 +259,26 @@ The project deploys to **Render** using the `render.yaml` Blueprint. The API con
    | `DATABASE_URL` | asyncpg connection string from step 1 |
    | `CORS_ALLOWED_ORIGINS` | *(leave blank for now — fill in after alpha-fe is deployed)* |
 
-6. Click **Deploy**. The API is live at `https://alpha-api-s4vm.onrender.com`.
+6. Click **Deploy**.
 
-### 3. Deploy alpha-fe (Static Site)
+### 3. Deploy alpha-fe to Vercel
 
-1. Go to **New → Static Site** and connect the same repo.
-2. Configure the site:
-
-   | Setting | Value |
-   |---|---|
-   | Root Directory | `alpha-fe` |
-   | Build Command | `npm ci && npm run build` |
-   | Publish Directory | `dist` |
-
-3. In the service **Settings** tab, scroll to **Redirects/Rewrites** and add a rule:
-
-   | Source | Destination | Action |
-   |---|---|---|
-   | `/*` | `/index.html` | Rewrite |
-
+1. Go to [vercel.com](https://vercel.com) → **Add New → Project**.
+2. Import your GitHub repo.
+3. Set the **Root Directory** to `alpha-fe`.
 4. Set environment variables:
 
    | Key | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | `https://alpha-api-s4vm.onrender.com` |
+   | `NEXT_PUBLIC_API_BASE_URL` | Render URL of alpha-api (e.g. `https://alpha-api.onrender.com`) |
 
-5. Click **Deploy**. The site is live at `https://project-alpha-92c2.onrender.com`.
+5. Click **Deploy**. Vercel auto-detects Next.js — no further configuration needed.
 
 ### 4. Finish wiring CORS
 
-1. Go back to the **alpha-api** service → **Environment**.
-2. Set `CORS_ALLOWED_ORIGINS` to `https://project-alpha-92c2.onrender.com`.
+1. Go back to the **alpha-api** service on Render → **Environment**.
+2. Set `CORS_ALLOWED_ORIGINS` to your Vercel deployment URL (e.g. `https://alpha-fe.vercel.app`).
 3. Save — Render will redeploy alpha-api automatically.
-
-> Render terminates TLS at the edge — both services are reachable only over HTTPS. HTTP requests to either service are redirected to HTTPS automatically.
 
 ---
 

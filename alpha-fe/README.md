@@ -1,6 +1,6 @@
 # alpha-fe
 
-Vue 3 + TypeScript frontend.
+Next.js 15 + React 19 + TypeScript frontend.
 
 ---
 
@@ -10,32 +10,18 @@ Vue 3 + TypeScript frontend.
 
 **Mac**
 
-1. Install [Homebrew](https://brew.sh) if you don't have it:
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-2. Install Node.js:
-   ```bash
-   brew install node
-   ```
-3. Confirm it worked:
-   ```bash
-   node --version
-   ```
+```bash
+brew install node
+node --version
+```
 
 **Windows**
 
-1. Download the LTS installer from [nodejs.org](https://nodejs.org/) and run it with default settings.
-2. Open a new PowerShell window and confirm:
-   ```powershell
-   node --version
-   ```
+Download the LTS installer from [nodejs.org](https://nodejs.org/) and run it with default settings.
 
 ---
 
 ## Setup
-
-Install dependencies once after cloning:
 
 ```bash
 npm install
@@ -49,8 +35,15 @@ npm install
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:5173`.
+Frontend available at `http://localhost:3000`.
 
-The Vite dev server proxies all `/api` requests to the backend. By default it targets `http://localhost:8000`. Override with the `VITE_API_TARGET` environment variable.
+API requests to `/api/*` are proxied to the backend. By default the target is `http://localhost:8000`. Override with the `API_TARGET` environment variable.
 
-Press `Ctrl + C` to stop the server.
+---
+
+## Environment variables
+
+| Variable | Where | Description |
+|---|---|---|
+| `API_TARGET` | dev server only | Backend URL for the dev proxy (default: `http://localhost:8000`) |
+| `NEXT_PUBLIC_API_BASE_URL` | production build | Full URL of the deployed API (e.g. `https://alpha-api.onrender.com`) |
